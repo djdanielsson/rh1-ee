@@ -1,0 +1,41 @@
+---
+# Ansible Collections to include in Execution Environment
+# These will be bundled into the container image
+
+collections:
+  # Custom collection from this project
+  - name: myorg.custom_collection
+    type: git
+    source: https://github.com/djdanielsson/rh1-custom-collection.git
+    version: main
+  
+  # AAP Configuration collection (for CaC pipelines)
+  - name: infra.aap_configuration
+    version: ">=2.9.0"
+  
+  # Core collections
+  - name: ansible.builtin
+    version: ">=2.16.0"
+  
+  - name: ansible.posix
+    version: ">=1.5.0"
+  
+  - name: ansible.utils
+    version: ">=4.0.0"
+  
+  # Community collections
+  - name: community.general
+    version: ">=9.0.0"
+  
+  # Add additional collections as needed
+  # Example: Cloud providers
+  # - name: amazon.aws
+  #   version: ">=7.0.0"
+  # 
+  # - name: kubernetes.core
+  #   version: ">=3.0.0"
+  # 
+  # Example: Networking
+  # - name: cisco.ios
+  #   version: ">=5.0.0"
+

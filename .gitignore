@@ -1,0 +1,46 @@
+# Execution Environment - GitIgnore
+
+# ansible-builder generated files
+context/
+*.log
+
+# Container images
+*.tar
+
+# Build artifacts
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Secrets (should never be in EE anyway)
+*.key
+*.pem
+*password*
+*secret*
+*token*
+

@@ -1,0 +1,44 @@
+# System Package Dependencies
+# Format: package-name [platform:rpm|dpkg] [profile:buildtime|runtime]
+# These RPM/DEB packages will be installed in the container
+
+# Version Control
+git [platform:rpm]
+
+# Network Tools
+iputils [platform:rpm]
+bind-utils [platform:rpm]
+openssh-clients [platform:rpm]
+
+# File Transfer
+rsync [platform:rpm]
+
+# Archive Tools
+tar [platform:rpm]
+unzip [platform:rpm]
+
+# Text Processing
+jq [platform:rpm]
+
+# Add additional system packages as needed:
+
+# Development tools (if building Python packages)
+# gcc [platform:rpm]
+# python3-devel [platform:rpm]
+# make [platform:rpm]
+
+# SSL/TLS
+# ca-certificates [platform:rpm]
+# openssl [platform:rpm]
+
+# Database clients
+# postgresql [platform:rpm]
+# mysql [platform:rpm]
+
+# Cloud CLIs (if needed)
+# awscli would need to be installed via pip, not bindep
+
+# Networking tools
+# tcpdump [platform:rpm]
+# nmap [platform:rpm]
+
