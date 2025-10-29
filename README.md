@@ -433,6 +433,17 @@ controller_job_templates_dev:
 
 ## Links
 
+### Related Repositories
+- **Cluster Config** (Platform GitOps): https://github.com/djdanielsson/rh1-cluster-config
+- **AAP Config as Code**: https://github.com/djdanielsson/rh1-aap-config-as-code
+- **Ansible Collection**: https://github.com/djdanielsson/rh1-custom-collection
+- **Release Manifests**: https://github.com/djdanielsson/rh1-release-manifest
+
+### Documentation
+- **Project Workspace**: https://github.com/djdanielsson/rh1_ansible_code_lifecycle
+- **Platform Specs**: https://github.com/djdanielsson/rh1_ansible_code_lifecycle/tree/main/specs/001-cloud-native-ansible-lifecycle
+
+### External Resources
 - **ansible-builder Docs**: https://ansible.readthedocs.io/projects/builder/
 - **AAP EE Guide**: https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.5/html/creating_and_consuming_execution_environments/
 - **Base Images**: https://catalog.redhat.com/software/containers/search
