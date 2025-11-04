@@ -1,51 +1,64 @@
 # Python Dependencies for Execution Environment
 # These will be installed via pip in the container image
+#
+# ⚠️ CRITICAL: Always use EXACT versions (e.g., "2.31.0"), never ranges (e.g., ">=2.31.0")
+# Ensures reproducible builds and prevents breaking changes
+# See: docs/EE-VERSIONING-STRATEGY.md
 
 # Core Python libraries
-requests>=2.31.0
-jinja2>=3.1.2
-pyyaml>=6.0
-netaddr>=0.9.0
+# ✅ GOOD: Exact versions pinned
+requests==2.31.0
+jinja2==3.1.2
+pyyaml==6.0.1
+netaddr==0.10.1
+jmespath==1.0.1
 
 # Ansible-related
 # ansible-core is included in base image
-ansible-lint>=6.22.0
-molecule>=6.0.0
+ansible-lint==24.2.0
+molecule==24.2.0
 
 # For API interactions
-urllib3>=2.1.0
+urllib3==2.2.1
 
 # For JSON/YAML processing
-jsonschema>=4.20.0
+jsonschema==4.21.1
 
 # Add cloud provider SDKs as needed:
+# ✅ Use EXACT versions (==), not ranges (>=)
+
 # AWS
-# boto3>=1.34.0
-# botocore>=1.34.0
+# boto3==1.34.59
+# botocore==1.34.59
 
 # Azure
-# azure-mgmt-compute>=30.0.0
-# azure-mgmt-network>=25.0.0
+# azure-mgmt-compute==30.6.0
+# azure-mgmt-network==25.3.0
 
 # GCP
-# google-cloud-compute>=1.15.0
+# google-cloud-compute==1.16.1
 
-# Kubernetes
-# kubernetes>=28.1.0
-# openshift>=0.13.0
+# Kubernetes / OpenShift
+# kubernetes==29.0.0
+# openshift==0.13.2
 
 # VMware
-# pyvmomi>=8.0.0
+# pyvmomi==8.0.2.0.1
 
 # Databases
-# pymongo>=4.6.0
-# psycopg2-binary>=2.9.0
-# mysql-connector-python>=8.2.0
+# pymongo==4.6.2
+# psycopg2-binary==2.9.9
+# mysql-connector-python==8.3.0
 
 # Monitoring/Observability
-# prometheus-client>=0.19.0
+# prometheus-client==0.20.0
 
 # Other utilities
-# hvac>=2.1.0  # HashiCorp Vault
-# python-ldap>=3.4.4  # LDAP
+# hvac==2.1.0  # HashiCorp Vault
+# python-ldap==3.4.4  # LDAP
+
+# ❌ BAD EXAMPLES (DO NOT USE):
+#
+# requests>=2.31.0  # ❌ Range - will break when 3.0.0 releases
+# jinja2  # ❌ No version - will use latest (non-reproducible)
 
