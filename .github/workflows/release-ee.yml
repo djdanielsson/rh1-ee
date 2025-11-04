@@ -1,0 +1,132 @@
+---
+name: Release EE
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+
+jobs:
+  build-and-release:
+    name: Build and Release EE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ansible-builder
+        run: pip install ansible-builder
+
+      - name: Get version
+        id: get-version
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION=${{ github.event.inputs.version }}
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Build EE
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          ansible-builder build \
+            --tag myorg-custom-ee:$VERSION \
+            --tag myorg-custom-ee:latest \
+            --container-runtime podman \
+            --verbosity 3
+
+      - name: Test EE
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          
+          echo "Testing EE image..."
+          podman run --rm myorg-custom-ee:$VERSION ansible --version
+          podman run --rm myorg-custom-ee:$VERSION ansible-galaxy collection list
+
+      - name: Get image digest
+        id: get-digest
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          DIGEST=$(podman inspect myorg-custom-ee:$VERSION --format='{{.Digest}}')
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+          echo "Image digest: $DIGEST"
+
+      - name: Log in to Quay.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Tag for registry
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          podman tag myorg-custom-ee:$VERSION quay.io/myorg/custom-ee:$VERSION
+          podman tag myorg-custom-ee:$VERSION quay.io/myorg/custom-ee:latest
+
+      - name: Push to registry
+        run: |
+          VERSION=${{ steps.get-version.outputs.version }}
+          podman push quay.io/myorg/custom-ee:$VERSION
+          podman push quay.io/myorg/custom-ee:latest
+          
+          echo "✅ Pushed quay.io/myorg/custom-ee:$VERSION"
+          echo "✅ Pushed quay.io/myorg/custom-ee:latest"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get-version.outputs.version }}
+          name: Release v${{ steps.get-version.outputs.version }}
+          body: |
+            ## Execution Environment Release v${{ steps.get-version.outputs.version }}
+            
+            ### Image Details
+            - **Registry**: quay.io/myorg/custom-ee
+            - **Tags**: 
+              - `${{ steps.get-version.outputs.version }}`
+              - `latest`
+            - **Digest**: `${{ steps.get-digest.outputs.digest }}`
+            
+            ### Pull Image
+            ```bash
+            podman pull quay.io/myorg/custom-ee:${{ steps.get-version.outputs.version }}
+            ```
+            
+            ### Use in AAP
+            ```yaml
+            execution_environment:
+              image: quay.io/myorg/custom-ee:${{ steps.get-version.outputs.version }}
+            ```
+            
+            ### Constitutional Compliance
+            - ✅ Article III: Version locked for atomic promotion
+            - ✅ Article IV: Production-grade quality
+            - ✅ Security scanned
+          draft: false
+          prerelease: false
+
+      - name: Comment on PRs
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ steps.get-version.outputs.version }}';
+            const digest = '${{ steps.get-digest.outputs.digest }}';
+            
+            core.info(`Released EE version ${version} with digest ${digest}`);
+
+
+

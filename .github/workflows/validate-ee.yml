@@ -1,0 +1,158 @@
+---
+name: Validate Execution Environment
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'execution-environment.yml'
+      - 'requirements.yml'
+      - 'requirements.txt'
+      - 'bindep.txt'
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate-definition:
+    name: Validate EE Definition
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ansible-builder
+        run: |
+          pip install ansible-builder
+          ansible-builder --version
+
+      - name: Validate EE definition
+        run: |
+          echo "Validating execution-environment.yml..."
+          ansible-builder create --verbosity 3
+
+      - name: Check for required files
+        run: |
+          required_files=("execution-environment.yml" "requirements.yml" "requirements.txt" "bindep.txt")
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Required file missing: $file"
+              exit 1
+            fi
+            echo "✅ Found $file"
+          done
+
+  check-versions:
+    name: Check Version Pinning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check collection versions
+        run: |
+          echo "Checking for pinned collection versions..."
+          
+          if grep -E "^\s+-\s+name:" requirements.yml | grep -v "version:" -A1 | grep -v "type: git" -A1 | grep "name:"; then
+            echo "⚠️  WARNING: Some collections may not have pinned versions"
+            echo "Best practice: Pin all collection versions for reproducibility"
+          else
+            echo "✅ All collections appear to have versions specified"
+          fi
+
+      - name: Check Python package versions
+        run: |
+          echo "Checking for pinned Python package versions..."
+          
+          if grep -v "^#" requirements.txt | grep -v "^$" | grep -v "==\|>=\|<=\|~="; then
+            echo "⚠️  WARNING: Some Python packages may not have pinned versions"
+            echo "Best practice: Pin versions (e.g., package==1.2.3)"
+          else
+            echo "✅ All Python packages have version constraints"
+          fi
+
+  check-base-image:
+    name: Check Base Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check base image
+        run: |
+          echo "Checking base image..."
+          
+          if ! grep -q "registry.redhat.io/ansible-automation-platform" execution-environment.yml; then
+            echo "⚠️  WARNING: Not using official AAP base image"
+            echo "Consider using: registry.redhat.io/ansible-automation-platform-25/ee-minimal-rhel9"
+          else
+            echo "✅ Using official AAP base image"
+          fi
+          
+          if grep -q ":latest" execution-environment.yml; then
+            echo "⚠️  WARNING: Using :latest tag in base image"
+            echo "Constitution Article III: Use specific versions for reproducibility"
+          fi
+
+  validate-yaml:
+    name: Validate YAML Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint
+        run: yamllint -c .yamllint .
+
+      - name: Validate YAML structure
+        run: |
+          python3 -c "
+import yaml
+import sys
+
+# Validate execution-environment.yml
+with open('execution-environment.yml') as f:
+    ee = yaml.safe_load(f)
+    assert 'version' in ee, 'Missing version'
+    assert 'images' in ee, 'Missing images'
+    assert 'dependencies' in ee, 'Missing dependencies'
+    print('✅ execution-environment.yml structure valid')
+
+# Validate requirements.yml
+with open('requirements.yml') as f:
+    reqs = yaml.safe_load(f)
+    assert 'collections' in reqs, 'Missing collections key'
+    print('✅ requirements.yml structure valid')
+"
+
+  pr-summary:
+    name: Generate PR Summary
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [validate-definition, check-versions, check-base-image, validate-yaml]
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Execution Environment Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| EE Definition | ${{ needs.validate-definition.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Version Pinning | ${{ needs.check-versions.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Base Image | ${{ needs.check-base-image.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| YAML Validation | ${{ needs.validate-yaml.result }} |" >> $GITHUB_STEP_SUMMARY
+
+
+

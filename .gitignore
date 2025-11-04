@@ -1,15 +1,31 @@
-# Execution Environment - GitIgnore
+# Execution Environment .gitignore
+# Build artifacts and container images
 
-# ansible-builder generated files
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.settings/
+.classpath
+
+# Ansible Builder artifacts
 context/
-*.log
-
-# Container images
+_build/
 *.tar
 
-# Build artifacts
-build/
-dist/
+# Container images (don't commit built images)
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+
+# Ansible
+*.retry
+.ansible/
+ansible.log
 
 # Python
 __pycache__/
@@ -17,30 +33,104 @@ __pycache__/
 *$py.class
 *.so
 .Python
-
-# Virtual environments
+env/
 venv/
 ENV/
-env/
-.venv/
+.venv
+pip-log.txt
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
+# Testing
+.pytest_cache/
+test-results/
+test-output/
+
+# Pre-commit
+.pre-commit-config.yaml.backup
 
 # Temporary files
+tmp/
+temp/
 *.tmp
 *.temp
-.tmp/
+*.log
+*.bak
+*.backup
 
-# Secrets (should never be in EE anyway)
-*.key
-*.pem
-*password*
+# SBOM artifacts (generated, not source)
+sbom/
+*.sbom
+*.spdx
+*.cyclonedx
+
+# Vulnerability scan reports
+scan-results/
+*.scan
+grype-report.*
+trivy-report.*
+
+# Container runtime artifacts
+.docker/
+.podman/
+
+# Local testing
+test-ee/
+local-ee/
+
+# macOS
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# Archive files
+*.zip
+*.rar
+
+# Local overrides
+*.local
+*.local.*
+local-*
+override-*
+
+# Secrets
 *secret*
+*password*
 *token*
+*.key
+*.crt
+*.pem
 
+# Keep important definition files
+!execution-environment.yml
+!execution-environment.yaml
+!bindep.txt
+!requirements.txt
+!requirements.yml
+!requirements.yaml
+
+# Documentation build artifacts
+docs/_build/
+site/
+
+# CI/CD local test runs
+.github/workflows/*.local.yml
+
+# Image metadata cache
+.image-metadata/
+
+# Ansible Navigator artifacts
+.ansible-navigator/
+ansible-navigator.log
+
+# Keep README and docs
+!README.md
+!docs/**

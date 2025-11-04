@@ -1,0 +1,87 @@
+{
+  "name": "Execution Environment Development",
+  "image": "quay.io/ansible/ansible-builder:latest",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.ansible",
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "eamodio.gitlens",
+        "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "yaml.schemas": {
+          "https://raw.githubusercontent.com/ansible/ansible-builder/main/src/ansible_builder/schemas/execution-environment.json": [
+            "execution-environment.yml",
+            "execution-environment.yaml"
+          ]
+        },
+        "yaml.format.enable": true,
+        "yaml.validate": true,
+        "files.associations": {
+          "execution-environment.yml": "yaml",
+          "bindep.txt": "plaintext",
+          "requirements.txt": "pip-requirements",
+          "requirements.yml": "yaml"
+        },
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "editor.formatOnSave": true,
+        "editor.rulers": [120],
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml",
+          "editor.tabSize": 2
+        },
+        "[dockerfile]": {
+          "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+          "editor.tabSize": 2
+        }
+      }
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  
+  "remoteUser": "root",
+  
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  "runArgs": [
+    "--network=host",
+    "--privileged"
+  ],
+
+  "forwardPorts": [],
+
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+}
+
