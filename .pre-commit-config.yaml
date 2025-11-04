@@ -90,7 +90,15 @@ repos:
     hooks:
       - id: ee-structure
         name: EE Structure Check
-        entry: bash -c 'required_files=("execution-environment.yml" "requirements.yml" "requirements.txt" "bindep.txt"); for file in "${required_files[@]}"; do if [ ! -f "$file" ]; then echo "❌ Required file not found: $file"; exit 1; fi; done; echo "✅ EE structure valid"'
+        entry: |
+          bash -c 'required_files=("execution-environment.yml" "requirements.yml" "requirements.txt" "bindep.txt")
+          for file in "${required_files[@]}"; do 
+            if [ ! -f "$file" ]; then 
+              echo "❌ Required file not found: $file"
+              exit 1
+            fi
+          done
+          echo "✅ EE structure valid"'
         language: system
         pass_filenames: false
         always_run: true
@@ -102,7 +110,8 @@ repos:
     hooks:
       - id: ee-yaml-validation
         name: Execution Environment YAML Validation
-        entry: bash -c 'if [ -f execution-environment.yml ]; then python3 -c "import yaml; ee=yaml.safe_load(open(\"execution-environment.yml\")); assert \"version\" in ee, \"Missing version\"; assert \"images\" in ee, \"Missing images\"; assert \"dependencies\" in ee, \"Missing dependencies\"" || { echo "❌ Invalid execution-environment.yml"; exit 1; }; echo "✅ execution-environment.yml valid"; fi'
+        entry: |
+          bash -c 'if [ -f execution-environment.yml ]; then python3 -c "import yaml; ee=yaml.safe_load(open(\"execution-environment.yml\")); assert \"version\" in ee, \"Missing version\"; assert \"images\" in ee, \"Missing images\"; assert \"dependencies\" in ee, \"Missing dependencies\"" || { echo "❌ Invalid execution-environment.yml"; exit 1; }; echo "✅ execution-environment.yml valid"; fi'
         language: system
         files: ^execution-environment\.yml$
         pass_filenames: false
@@ -114,7 +123,8 @@ repos:
     hooks:
       - id: base-image-check
         name: Base Image Validation
-        entry: bash -c 'if [ -f execution-environment.yml ]; then if ! grep -q "registry.redhat.io/ansible-automation-platform" execution-environment.yml && ! grep -q "quay.io/ansible" execution-environment.yml; then echo "⚠️  WARNING: Consider using official AAP base images"; fi; fi'
+        entry: |
+          bash -c 'if [ -f execution-environment.yml ]; then if ! grep -q "registry.redhat.io/ansible-automation-platform" execution-environment.yml && ! grep -q "quay.io/ansible" execution-environment.yml; then echo "⚠️  WARNING: Consider using official AAP base images"; fi; fi'
         language: system
         files: ^execution-environment\.yml$
         pass_filenames: false
@@ -126,7 +136,8 @@ repos:
     hooks:
       - id: requirements-yml-validation
         name: Requirements.yml Validation
-        entry: bash -c 'if [ -f requirements.yml ]; then python3 -c "import yaml; reqs=yaml.safe_load(open(\"requirements.yml\")); assert \"collections\" in reqs, \"Missing collections key\"" || { echo "❌ Invalid requirements.yml"; exit 1; }; echo "✅ requirements.yml valid"; fi'
+        entry: |
+          bash -c 'if [ -f requirements.yml ]; then python3 -c "import yaml; reqs=yaml.safe_load(open(\"requirements.yml\")); assert \"collections\" in reqs, \"Missing collections key\"" || { echo "❌ Invalid requirements.yml"; exit 1; }; echo "✅ requirements.yml valid"; fi'
         language: system
         files: ^requirements\.yml$
         pass_filenames: false
@@ -138,14 +149,16 @@ repos:
     hooks:
       - id: version-pinning-collections
         name: Collection Version Pinning Check
-        entry: bash -c 'if [ -f requirements.yml ]; then if grep -E "^\s+-\s+name:" requirements.yml | grep -v "version:" -A1 | grep -v "type: git" -A1 | grep "name:"; then echo "⚠️  WARNING: Some collections may not have pinned versions"; echo "Best practice: Pin all collection versions for reproducibility"; fi; fi'
+        entry: |
+          bash -c 'if [ -f requirements.yml ]; then if grep -E "^\s+-\s+name:" requirements.yml | grep -v "version:" -A1 | grep -v "type: git" -A1 | grep "name:"; then echo "⚠️  WARNING: Some collections may not have pinned versions"; echo "Best practice: Pin all collection versions for reproducibility"; fi; fi'
         language: system
         files: ^requirements\.yml$
         pass_filenames: false
 
       - id: version-pinning-python
         name: Python Version Pinning Check
-        entry: bash -c 'if [ -f requirements.txt ]; then if grep -v "^#" requirements.txt | grep -v "^$" | grep -v "==\|>=\|<=\|~="; then echo "⚠️  WARNING: Some Python packages may not have pinned versions"; echo "Best practice: Pin versions (e.g., package==1.2.3)"; fi; fi'
+        entry: |
+          bash -c 'if [ -f requirements.txt ]; then if grep -v "^#" requirements.txt | grep -v "^$" | grep -v "==\|>=\|<=\|~="; then echo "⚠️  WARNING: Some Python packages may not have pinned versions"; echo "Best practice: Pin versions (e.g., package==1.2.3)"; fi; fi'
         language: system
         files: ^requirements\.txt$
         pass_filenames: false
@@ -157,7 +170,8 @@ repos:
     hooks:
       - id: no-latest-tags
         name: No Latest Tags Check
-        entry: bash -c 'if [ -f execution-environment.yml ]; then if grep -q ":latest" execution-environment.yml; then echo "⚠️  WARNING: Using :latest tag in base image"; echo "Constitution Article III: Use specific versions for reproducibility"; echo "Consider pinning to specific version tag"; fi; fi'
+        entry: |
+          bash -c 'if [ -f execution-environment.yml ]; then if grep -q ":latest" execution-environment.yml; then echo "⚠️  WARNING: Using :latest tag in base image"; echo "Constitution Article III: Use specific versions for reproducibility"; echo "Consider pinning to specific version tag"; fi; fi'
         language: system
         files: ^execution-environment\.yml$
         pass_filenames: false
@@ -169,7 +183,8 @@ repos:
     hooks:
       - id: bindep-validation
         name: Bindep.txt Validation
-        entry: bash -c 'if [ -f bindep.txt ]; then while IFS= read -r line; do [[ "$line" =~ ^#.*$ ]] && continue; [[ -z "$line" ]] && continue; if ! [[ "$line" =~ ^[a-zA-Z0-9_-]+(\s+\[.*\])?(\s+#.*)?$ ]]; then echo "⚠️  WARNING: Possibly invalid bindep line: $line"; fi; done < bindep.txt; echo "✅ bindep.txt format ok"; fi'
+        entry: |
+          bash -c 'if [ -f bindep.txt ]; then while IFS= read -r line; do [[ "$line" =~ ^#.*$ ]] && continue; [[ -z "$line" ]] && continue; if ! [[ "$line" =~ ^[a-zA-Z0-9_-]+(\s+\[.*\])?(\s+#.*)?$ ]]; then echo "⚠️  WARNING: Possibly invalid bindep line: $line"; fi; done < bindep.txt; echo "✅ bindep.txt format ok"; fi'
         language: system
         files: ^bindep\.txt$
         pass_filenames: false
@@ -181,7 +196,8 @@ repos:
     hooks:
       - id: no-manual-dockerfile
         name: No Manual Dockerfile
-        entry: bash -c 'if [ -f Dockerfile ] || [ -f Containerfile ]; then echo "❌ VIOLATION: Manual Dockerfile/Containerfile not allowed"; echo "Use execution-environment.yml and ansible-builder"; echo "Dockerfiles should be in context/ directory only (generated)"; exit 1; fi'
+        entry: |
+          bash -c 'if [ -f Dockerfile ] || [ -f Containerfile ]; then echo "❌ VIOLATION: Manual Dockerfile/Containerfile not allowed"; echo "Use execution-environment.yml and ansible-builder"; echo "Dockerfiles should be in context/ directory only (generated)"; exit 1; fi'
         language: system
         files: ^(Dockerfile|Containerfile)$
         pass_filenames: false
@@ -193,7 +209,16 @@ repos:
     hooks:
       - id: no-secrets
         name: No Secrets in EE Config
-        entry: bash -c 'echo "Checking for secrets..."; for f in "$@"; do if grep -iE "(password|secret|token|api[_-]?key):\s*[\"'\''][^{]" "$f" | grep -v "^#"; then echo "❌ VIOLATION: Possible secret in $f"; echo "Constitution Article V: No secrets in Git"; exit 1; fi; done; echo "✅ No secrets detected"'
+        entry: |
+          bash -c 'echo "Checking for secrets..."
+          for f in "$@"; do 
+            if grep -iE "(password|secret|token|api[_-]?key):\s*[\"'\''][^{]" "$f" | grep -v "^#"; then 
+              echo "❌ VIOLATION: Possible secret in $f"
+              echo "Constitution Article V: No secrets in Git"
+              exit 1
+            fi
+          done
+          echo "✅ No secrets detected"'
         language: system
         files: \.(yaml|yml|txt)$
         pass_filenames: true
@@ -205,7 +230,8 @@ repos:
     hooks:
       - id: ee-build-test
         name: EE Build Test (Syntax)
-        entry: bash -c 'if command -v ansible-builder &> /dev/null; then echo "Testing EE definition..."; ansible-builder create --verbosity 1 || { echo "❌ ansible-builder create failed"; exit 1; }; echo "✅ EE definition valid"; rm -rf context; else echo "⚠️  ansible-builder not found, skipping build test"; fi'
+        entry: |
+          bash -c 'if command -v ansible-builder &> /dev/null; then echo "Testing EE definition..."; ansible-builder create --verbosity 1 || { echo "❌ ansible-builder create failed"; exit 1; }; echo "✅ EE definition valid"; rm -rf context; else echo "⚠️  ansible-builder not found, skipping build test"; fi'
         language: system
         pass_filenames: false
         # Comment out 'always_run' to disable this check by default (can be slow)
@@ -218,7 +244,8 @@ repos:
     hooks:
       - id: readme-check
         name: README Exists Check
-        entry: bash -c 'if [ ! -f README.md ]; then echo "❌ README.md not found"; exit 1; fi'
+        entry: |
+          bash -c 'if [ ! -f README.md ]; then echo "❌ README.md not found"; exit 1; fi'
         language: system
         pass_filenames: false
         always_run: true
