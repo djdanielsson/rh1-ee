@@ -1,0 +1,73 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: ansible-builder-run
+  annotations:
+    pipelinesascode.tekton.dev/task-1: "[git-clone]"
+    pipelinesascode.tekton.dev/task-2: ".tekton/tasks/ansible-builder-task.yml"
+    pipelinesascode.tekton.dev/on-event: "[pull_request, push]"
+    pipelinesascode.tekton.dev/on-target-branch: "[main]"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+spec:
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  pipelineSpec:
+    workspaces:
+    - name: shared-workspace
+    tasks:
+      - name: fetch-source
+        taskRef:
+          name: git-clone
+        params:
+        - name: url
+          value: "{{ repo_url }}"
+        - name: revision
+          value: "{{ revision }}"
+        - name: verbose
+          value: "true"
+        workspaces:
+        - name: output
+          workspace: shared-workspace
+
+      - name: ansible-builder
+        runAfter:
+        - fetch-source
+        taskRef:
+          name: ansible-builder
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+
+      - name: build-image
+        taskRef:
+          resolver: cluster
+          params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah-ns
+          - name: namespace
+            value: openshift-pipelines
+        params:
+        - name: IMAGE
+          value: "myregistry.io/rh1-ee:asdf"
+        - name: DOCKERFILE
+          value: "Containerfile"
+        - name: CONTEXT
+          value: "context"
+        - name: SKIP_PUSH
+          value: "true"
+        - name: VERBOSE
+          value: "true"
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        runAfter:
+        - ansible-builder
