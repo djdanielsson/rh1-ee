@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
-  name: molecule-converge
+  name: ansible-builder-run
   annotations:
     pipelinesascode.tekton.dev/task-1: "[git-clone]"
     pipelinesascode.tekton.dev/task-2: ".tekton/tasks/ansible-builder-task.yml"
@@ -37,13 +37,13 @@ spec:
           workspace: shared-workspace
 
       - name: ansible-builder
+        runAfter:
+        - fetch-source
         taskRef:
           name: ansible-builder
         workspaces:
         - name: source
-          workspace: shared-data
-        runAfter:
-        - fetch-source
+          workspace: shared-workspace
 
       - name: build-image
         taskRef:
