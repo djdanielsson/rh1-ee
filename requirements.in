@@ -1,0 +1,10 @@
+requests
+jinja2
+pyyaml
+netaddr
+jmespath
+ansible-lint
+molecule
+urllib3
+jsonschema
+kubernetes
