@@ -52,7 +52,7 @@ spec:
           - name: kind
             value: task
           - name: name
-            value: buildah-ns
+            value: buildah
           - name: namespace
             value: openshift-pipelines
         params:
@@ -66,6 +66,14 @@ spec:
           value: "true"
         - name: VERBOSE
           value: "true"
+        # - name: BUILD_ARGS
+        #   value:
+        #     - "AH_TOKEN=${AH_TOKEN}"
+        #     - "AH_TOKEN_TYPE=Bearer"
+        #     - "AH_TOKEN_EXPIRATION=86400"
+        #     - "AH_TOKEN_EXPIRATION_TIME=2025-11-26T12:00:00Z"
+        #     - "AH_TOKEN_EXPIRATION_TIME_TYPE=datetime"
+        #     - "AH_TOKEN_EXPIRATION_TIME_TYPE=datetime"
         workspaces:
         - name: source
           workspace: shared-workspace
