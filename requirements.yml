@@ -7,48 +7,15 @@
 # See: docs/EE-VERSIONING-STRATEGY.md
 
 collections:
-  # Custom collection from this project
-  # ⚠️ For production, pin to specific Git tag (e.g., "qa-v1.1.0"), not "main"
-
-  # AAP Configuration collection (for CaC pipelines)
-  # ✅ GOOD: Exact version pinned
-  # - name: infra.aap_configuration
-  #   version: "2.9.0"
-
-  # Core collections
   - name: ansible.posix
     version: 2.1.0  # ✅ Exact version
-
   - name: ansible.utils
     version: 6.0.0 # ✅ Exact version
-
-  # Community collections
   - name: community.general
     version: 12.0.0  # ✅ Exact version
-
-  # OpenShift Virtualization (for dynamic inventory)
   - name: kubevirt.core
     version: 2.2.3  # ✅ Exact version
-
-  # Add additional collections as needed
-  # Example: Cloud providers
-  # - name: amazon.aws
-  #   version: "9.0.0"  # ✅ Exact version, not >=7.0.0
-  #
-  # - name: kubernetes.core
-  #   version: "5.0.0"  # ✅ Exact version
-  #
-  # Example: Networking
-  # - name: cisco.ios
-  #   version: "8.0.0"  # ✅ Exact version
-
-# ❌ BAD EXAMPLES (DO NOT USE):
-#
-# - name: ansible.posix
-#   version: ">=1.5.0"  # ❌ Range - will break when 2.0.0 releases
-#
-# - name: community.general  # ❌ No version - will use latest (non-reproducible)
-#
-# - name: myorg.custom
-#   version: main  # ❌ Mutable ref in production
-
+  - name: ansible.platform #todo version lock
+  - name: ansible.hub
+  - name: ansible.eda
+  - name: ansible.controller
