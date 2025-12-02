@@ -18,9 +18,9 @@ spec:
         resources:
           requests:
             storage: 1Gi
-  - name: dockerconfig
-    secret:
-      secretName: ee-pull-secret
+  # - name: dockerconfig
+  #   secret:
+  #     secretName: ee-pull-secret
   params:
     - name: ansible_galaxy_environment_variables
       value:
@@ -87,7 +87,7 @@ spec:
         workspaces:
         - name: source
           workspace: shared-workspace
-        - name: dockerconfig
-          workspace: dockerconfig
+        # - name: dockerconfig
+        #   workspace: dockerconfig
         runAfter:
         - ansible-builder
