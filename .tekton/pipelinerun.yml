@@ -18,6 +18,17 @@ spec:
         resources:
           requests:
             storage: 1Gi
+  params:
+    - name: ansible_galaxy_environment_variables
+      value:
+        - "ANSIBLE_GALAXY_SERVER_LIST={{ ansible_galaxy_server_list }}"
+        - "ANSIBLE_GALAXY_SERVER_PUBLISHED_URL={{ ansible_galaxy_server_published_url }}"
+        - "ANSIBLE_GALAXY_SERVER_PUBLISHED_AUTH_URL={{ ansible_galaxy_server_published_auth_url }}"
+        - "ANSIBLE_GALAXY_SERVER_PUBLISHED_TOKEN={{ ansible_galaxy_server_published_token }}"
+        - "ANSIBLE_GALAXY_SERVER_VALIDATED_URL={{ ansible_galaxy_server_validated_url }}"
+        - "ANSIBLE_GALAXY_SERVER_VALIDATED_AUTH_URL={{ ansible_galaxy_server_validated_auth_url }}"
+        - "ANSIBLE_GALAXY_SERVER_VALIDATED_TOKEN={{ ansible_galaxy_server_validated_token }}"
+        - "ANSIBLE_GALAXY_SERVER_COMMUNITY_URL={{ ansible_galaxy_server_community_url }}"
   pipelineSpec:
     workspaces:
     - name: shared-workspace
@@ -66,14 +77,8 @@ spec:
           value: "true"
         - name: VERBOSE
           value: "true"
-        # - name: BUILD_ARGS
-        #   value:
-        #     - "AH_TOKEN=${AH_TOKEN}"
-        #     - "AH_TOKEN_TYPE=Bearer"
-        #     - "AH_TOKEN_EXPIRATION=86400"
-        #     - "AH_TOKEN_EXPIRATION_TIME=2025-11-26T12:00:00Z"
-        #     - "AH_TOKEN_EXPIRATION_TIME_TYPE=datetime"
-        #     - "AH_TOKEN_EXPIRATION_TIME_TYPE=datetime"
+        - name: BUILD_ARGS
+          value: $(params.ansible_galaxy_environment_variables)
         workspaces:
         - name: source
           workspace: shared-workspace
