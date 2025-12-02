@@ -19,3 +19,4 @@ collections:
   - name: ansible.hub
   - name: ansible.eda
   - name: ansible.controller
+  - name: infra.aap_configuration
