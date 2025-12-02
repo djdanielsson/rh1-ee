@@ -19,6 +19,8 @@ dependencies:
   ansible_runner:
     package_pip: ansible-runner
   galaxy: requirements.yml
+  system:
+    - systemd-devel [platform:rpm]
   # python: requirements.txt
   # system: bindep.txt
 
