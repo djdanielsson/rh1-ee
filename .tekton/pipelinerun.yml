@@ -78,7 +78,7 @@ spec:
         - name: VERBOSE
           value: "true"
         - name: BUILD_ARGS
-          value: $(params.ansible_galaxy_environment_variables)
+          value: $(params.ansible_galaxy_environment_variables[*])
         workspaces:
         - name: source
           workspace: shared-workspace
