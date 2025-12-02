@@ -20,7 +20,7 @@ spec:
             storage: 1Gi
   - name: dockerconfig
     secret:
-      secretName: ee-dockerconfig
+      secretName: ee-pull-secret
   params:
     - name: ansible_galaxy_environment_variables
       value:
