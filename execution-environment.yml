@@ -21,9 +21,9 @@ dependencies:
 
 additional_build_steps:
   prepend_builder:
-    - ENV PKGMGR_OPTS "--nodocs --setopt install_weak_deps=0 --enablerepo=rhocp-4.21-for-rhel-9-x86_64-rpms"
+    - ENV PKGMGR_OPTS "--nodocs --setopt install_weak_deps=0 --enablerepo=rhocp-4.20-for-rhel-9-x86_64-rpms"
   prepend_final:
-    - ENV PKGMGR_OPTS "--nodocs --setopt install_weak_deps=0 --enablerepo=rhocp-4.21-for-rhel-9-x86_64-rpms"
+    - ENV PKGMGR_OPTS "--nodocs --setopt install_weak_deps=0 --enablerepo=rhocp-4.20-for-rhel-9-x86_64-rpms"
   prepend_galaxy:
     - ARG ANSIBLE_GALAXY_SERVER_LIST
     - ARG ANSIBLE_GALAXY_SERVER_PUBLISHED_URL
