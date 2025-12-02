@@ -18,6 +18,9 @@ spec:
         resources:
           requests:
             storage: 1Gi
+  - name: dockerconfig
+    secret:
+      secretName: ee-dockerconfig
   params:
     - name: ansible_galaxy_environment_variables
       value:
@@ -57,6 +60,12 @@ spec:
           workspace: shared-workspace
 
       - name: build-image
+        matrix:
+          params:
+            - name: IMAGE
+              value:
+                - "quay.io/igou/rh1-ee:{{ revision }}"
+                - "quay.io/igou/rh1-ee:latest"
         taskRef:
           resolver: cluster
           params:
@@ -67,14 +76,10 @@ spec:
           - name: namespace
             value: openshift-pipelines
         params:
-        - name: IMAGE
-          value: "myregistry.io/rh1-ee:asdf"
         - name: DOCKERFILE
           value: "Containerfile"
         - name: CONTEXT
           value: "context"
-        - name: SKIP_PUSH
-          value: "true"
         - name: VERBOSE
           value: "true"
         - name: BUILD_ARGS
@@ -82,5 +87,7 @@ spec:
         workspaces:
         - name: source
           workspace: shared-workspace
+        - name: dockerconfig
+          workspace: dockerconfig
         runAfter:
         - ansible-builder
