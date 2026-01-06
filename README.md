@@ -272,7 +272,7 @@ Start with `ee-minimal-rhel9` and only add what you need:
 ```yaml
 images:
   base_image:
-    name: registry.redhat.io/ansible-automation-platform-25/ee-minimal-rhel9:latest
+    name: registry.redhat.io/ansible-automation-platform-26/ee-minimal-rhel9:latest
 ```
 
 ### 3. Test Before Push
@@ -301,42 +301,6 @@ trivy image quay.io/myorg/custom-ee:26.01.06.0
 - Don't install unnecessary packages
 - Clean up build artifacts
 - Use multi-stage builds if needed
-
-## Troubleshooting
-
-### Build Fails
-
-```bash
-# Enable verbose output
-ansible-builder build -t test-ee --verbosity 3
-
-# Check the generated Containerfile
-cat context/Containerfile
-```
-
-### Collection Not Found
-
-```bash
-# Verify collections in built image
-podman run -it myorg-custom-ee:latest \
-  ansible-galaxy collection list
-```
-
-### Python Import Error
-
-```bash
-# Check Python packages
-podman run -it myorg-custom-ee:latest \
-  pip list
-```
-
-### Permission Issues
-
-```bash
-# Check file permissions
-podman run -it myorg-custom-ee:latest \
-  ls -la /runner
-```
 
 ## Development Workflow
 
