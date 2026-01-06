@@ -402,6 +402,123 @@ git push origin 26.01.06.0
    - Name: `Custom EE`
    - Image: `quay.io/myorg/custom-ee:26.01.06.0`
    - Pull: `Always` (dev) or `Missing` (prod)
+```
+
+## Troubleshooting
+
+### Build Failures
+
+**Symptoms**: `ansible-builder build` fails with errors
+
+**Diagnosis**:
+```bash
+# Check build logs
+ansible-builder build --log-level debug
+
+# Validate execution-environment.yml
+ansible-builder introspect --sanitize execution-environment.yml
+
+# Check base image
+podman/docker pull registry.redhat.io/ansible-automation-platform-26/ee-minimal-rhel9
+```
+
+**Common Solutions**:
+- **Dependency conflicts**: Resolve conflicting Python package versions
+- **Missing system packages**: Add required packages to `bindep.txt`
+- **Base image issues**: Verify base image is available and compatible
+- **Network issues**: Ensure access to PyPI and package repositories
+
+### Collection Installation Issues
+
+**Symptoms**: Collections fail to install during build
+
+**Diagnosis**:
+```bash
+# Test collection installation
+ansible-galaxy collection install -r requirements.yml --dry-run
+
+# Check collection versions
+ansible-galaxy collection list
+
+# Validate requirements.yml syntax
+python -c "import yaml; yaml.safe_load(open('requirements.yml'))"
+```
+
+**Solutions**:
+- **Version conflicts**: Specify exact collection versions
+- **Missing dependencies**: Add required collections to requirements.yml
+- **Network issues**: Verify connectivity to Galaxy servers
+- **Authentication**: Check if private collections require authentication
+
+### Image Size Issues
+
+**Symptoms**: EE image is too large or build runs out of space
+
+**Diagnosis**:
+```bash
+# Check image layers
+podman/docker history <ee-image>
+
+# Analyze image size
+podman/docker images <ee-image>
+
+# Check build cache
+du -sh ~/.cache/ansible-builder/
+```
+
+**Solutions**:
+- **Minimize layers**: Combine RUN commands where possible
+- **Clean up**: Remove unnecessary packages after installation
+- **Base image**: Use minimal base images when appropriate
+- **Multi-stage builds**: Use multi-stage builds to reduce final image size
+
+### Runtime Issues in AAP
+
+**Symptoms**: EE works locally but fails in AAP jobs
+
+**Diagnosis**:
+```bash
+# Test locally
+podman/docker run -it <ee-image> /bin/bash
+
+# Check AAP job logs
+# In AAP UI: Job → Output → View job output
+
+# Verify EE configuration
+ansible-galaxy collection list
+python --version
+pip list
+```
+
+**Solutions**:
+- **Missing dependencies**: Add runtime dependencies to EE
+- **Path issues**: Ensure executables are in PATH
+- **Permission issues**: Check file permissions in EE
+- **AAP compatibility**: Verify EE meets AAP requirements
+
+### Registry Push Failures
+
+**Symptoms**: `podman/docker push` fails
+
+**Diagnosis**:
+```bash
+# Check authentication
+podman/docker login <registry>
+
+# Verify image exists locally
+podman/docker images | grep <ee-image>
+
+# Test registry connectivity
+curl -I https://<registry>/v2/
+```
+
+**Solutions**:
+- **Authentication**: Ensure proper registry credentials
+- **Permissions**: Verify push permissions to target repository
+- **Network issues**: Check firewall and proxy settings
+- **Storage quotas**: Verify registry storage limits
+
+---
 
 ### Use in Job Template
 
