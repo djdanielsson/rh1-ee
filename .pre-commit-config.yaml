@@ -19,24 +19,24 @@ repos:
       # Prevent large files from being committed
       - id: check-added-large-files
         args: ['--maxkb=500']
-        
+
       # Ensure files end with newline
       - id: end-of-file-fixer
-        
+
       # Remove trailing whitespace
       - id: trailing-whitespace
         args: ['--markdown-linebreak-ext=md']
-        
+
       # Verify YAML syntax
       - id: check-yaml
-        
+
       # Check for merge conflict markers
       - id: check-merge-conflict
-        
+
       # Prevent committing to main/master directly
       - id: no-commit-to-branch
         args: ['--branch', 'main', '--branch', 'master']
-        
+
       # Check case conflicts
       - id: check-case-conflict
 
@@ -92,8 +92,8 @@ repos:
         name: EE Structure Check
         entry: |
           bash -c 'required_files=("execution-environment.yml" "requirements.yml" "requirements.txt" "bindep.txt")
-          for file in "${required_files[@]}"; do 
-            if [ ! -f "$file" ]; then 
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
               echo "❌ Required file not found: $file"
               exit 1
             fi
@@ -211,8 +211,8 @@ repos:
         name: No Secrets in EE Config
         entry: |
           bash -c 'echo "Checking for secrets..."
-          for f in "$@"; do 
-            if grep -iE "(password|secret|token|api[_-]?key):\s*[\"'\''][^{]" "$f" | grep -v "^#"; then 
+          for f in "$@"; do
+            if grep -iE "(password|secret|token|api[_-]?key):\s*[\"'\''][^{]" "$f" | grep -v "^#"; then
               echo "❌ VIOLATION: Possible secret in $f"
               echo "Constitution Article V: No secrets in Git"
               exit 1

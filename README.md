@@ -1,7 +1,7 @@
 # Ansible Execution Environment Example
 
-**Purpose**: Custom Execution Environment for Ansible Automation Platform  
-**Repository**: https://github.com/djdanielsson/rh1-custom-ee.git  
+**Purpose**: Custom Execution Environment for Ansible Automation Platform
+**Repository**: https://github.com/djdanielsson/rh1-custom-ee.git
 **Built with**: ansible-builder
 
 ## Overview
@@ -64,7 +64,7 @@ dependencies:
 additional_build_steps:
   prepend_base:
     - RUN echo "Custom EE for myorg"
-  
+
   append_final:
     - RUN chmod -R ug+rwx /runner
 
@@ -83,10 +83,10 @@ collections:
     type: git
     source: https://github.com/djdanielsson/rh1-custom-collection.git
     version: main
-  
+
   - name: infra.aap_configuration
     version: ">=2.9.0"
-  
+
   - name: ansible.posix
     version: ">=1.5.0"
 ```
@@ -450,7 +450,7 @@ controller_job_templates_dev:
 
 ---
 
-**Last Updated**: 2025-10-29  
-**Maintained By**: Platform Team  
+**Last Updated**: 2025-10-29
+**Maintained By**: Platform Team
 **Questions**: File issue in this repository
 

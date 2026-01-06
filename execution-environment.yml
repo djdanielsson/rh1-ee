@@ -4,7 +4,14 @@ build_arg_defaults:
   ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: '--pre'
 images:
   base_image:
+<<<<<<< HEAD
     name: image-registry.openshift-image-registry.svc:5000/ci-rh1-ee/ee-minimal-rhel9
+=======
+    # ✅ Using official AAP 2.6 EE minimal base image
+    # For production, pin to specific digest: @sha256:abc123...
+    name: registry.redhat.io/ansible-automation-platform-26/ee-minimal-rhel9:latest
+
+>>>>>>> e1b3aa7 (updates)
 options:
   package_manager_path: /usr/bin/microdnf
 dependencies:

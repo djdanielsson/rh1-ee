@@ -83,18 +83,18 @@ SCAN_EXIT_CODE=0
 if [ "${SCANNER}" == "grype" ]; then
     # Run grype scan
     echo -e "${BLUE}→ Scanning with Grype...${NC}"
-    
+
     # JSON output for processing
     grype "${IMAGE_NAME}" -o json > "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_grype.json" || SCAN_EXIT_CODE=$?
-    
+
     # Table output for human readability
     grype "${IMAGE_NAME}" -o table > "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_grype.txt" || true
-    
+
     # SARIF output for GitHub Advanced Security
     grype "${IMAGE_NAME}" -o sarif > "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_grype.sarif" || true
-    
+
     echo -e "${GREEN}✅ Scan results saved${NC}"
-    
+
     # Parse results
     CRITICAL=$(jq '[.matches[] | select(.vulnerability.severity == "Critical")] | length' "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_grype.json")
     HIGH=$(jq '[.matches[] | select(.vulnerability.severity == "High")] | length' "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_grype.json")
@@ -105,18 +105,18 @@ if [ "${SCANNER}" == "grype" ]; then
 elif [ "${SCANNER}" == "trivy" ]; then
     # Run trivy scan
     echo -e "${BLUE}→ Scanning with Trivy...${NC}"
-    
+
     # JSON output for processing
     trivy image --format json --output "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_trivy.json" "${IMAGE_NAME}" || SCAN_EXIT_CODE=$?
-    
+
     # Table output for human readability
     trivy image --format table --output "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_trivy.txt" "${IMAGE_NAME}" || true
-    
+
     # SARIF output for GitHub Advanced Security
     trivy image --format sarif --output "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_trivy.sarif" "${IMAGE_NAME}" || true
-    
+
     echo -e "${GREEN}✅ Scan results saved${NC}"
-    
+
     # Parse results
     CRITICAL=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_trivy.json" 2>/dev/null || echo 0)
     HIGH=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "HIGH")] | length' "${SCAN_DIR}/${IMAGE_FILENAME}_${TIMESTAMP}_trivy.json" 2>/dev/null || echo 0)
@@ -209,12 +209,12 @@ else
         echo -e "${GREEN}${BOLD}✅ No vulnerabilities found!${NC}"
         echo ""
     fi
-    
+
     echo "Constitutional compliance:"
     echo "  ✅ Article V: Zero-Trust Security - Vulnerability scanning complete"
     echo "  ✅ Article IV: Production-Grade Quality - Security validated"
     echo ""
-    
+
     exit 0
 fi
 

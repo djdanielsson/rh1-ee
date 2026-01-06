@@ -91,20 +91,20 @@ echo ""
 # Count packages by type
 echo "Package counts by type:"
 syft "${IMAGE_NAME}" -o json | jq -r '
-  .artifacts | 
-  group_by(.type) | 
-  map({type: .[0].type, count: length}) | 
-  .[] | 
+  .artifacts |
+  group_by(.type) |
+  map({type: .[0].type, count: length}) |
+  .[] |
   "  \(.type): \(.count)"
 ' 2>/dev/null || echo "  (statistics unavailable)"
 
 echo ""
 echo "Top packages by size:"
 syft "${IMAGE_NAME}" -o json | jq -r '
-  .artifacts | 
-  sort_by(.metadata.size) | 
-  reverse | 
-  limit(10; .[]) | 
+  .artifacts |
+  sort_by(.metadata.size) |
+  reverse |
+  limit(10; .[]) |
   "  \(.name) (\(.version)): \(.metadata.size // 0) bytes"
 ' 2>/dev/null || echo "  (size information unavailable)"
 
@@ -112,9 +112,9 @@ syft "${IMAGE_NAME}" -o json | jq -r '
 echo ""
 echo "Licenses found:"
 syft "${IMAGE_NAME}" -o json | jq -r '
-  [.artifacts[].licenses[]?.value] | 
-  unique | 
-  .[] | 
+  [.artifacts[].licenses[]?.value] |
+  unique |
+  .[] |
   "  \(.)"
 ' 2>/dev/null || echo "  (license information unavailable)"
 

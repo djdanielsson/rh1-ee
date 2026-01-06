@@ -21,36 +21,36 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            
+
             // Get changed files
             const files = await github.rest.pulls.listFiles({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: pr.number
             });
-            
+
             const labels = new Set();
-            
+
             files.data.forEach(file => {
               const path = file.filename;
-              
+
               // Label by file type
               if (path === 'execution-environment.yml') labels.add('ee-definition');
               if (path === 'requirements.yml') labels.add('collections');
               if (path === 'requirements.txt') labels.add('python-deps');
               if (path === 'bindep.txt') labels.add('system-deps');
-              
+
               // Label by impact
               if (path === 'execution-environment.yml') {
                 labels.add('high-impact');
                 labels.add('needs-build');
               }
-              
+
               // Label by file type
               if (path.endsWith('.md')) labels.add('documentation');
               if (path.startsWith('.github/')) labels.add('ci/cd');
             });
-            
+
             // Apply labels
             if (labels.size > 0) {
               await github.rest.issues.addLabels({
