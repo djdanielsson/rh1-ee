@@ -149,11 +149,11 @@ podman run -it myorg-custom-ee:latest ansible --version
 
 ```bash
 # Build with version tag
-ansible-builder build -t myorg-custom-ee:1.0.0
+ansible-builder build -t myorg-custom-ee:26.01.06.0
 
 # Build with multiple tags
 ansible-builder build \
-  -t myorg-custom-ee:1.0.0 \
+  -t myorg-custom-ee:26.01.06.0 \
   -t myorg-custom-ee:latest
 ```
 
@@ -161,13 +161,13 @@ ansible-builder build \
 
 ```bash
 # Build
-ansible-builder build -t quay.io/myorg/custom-ee:1.0.0
+ansible-builder build -t quay.io/myorg/custom-ee:26.01.06.0
 
 # Login to registry
 podman login quay.io
 
 # Push
-podman push quay.io/myorg/custom-ee:1.0.0
+podman push quay.io/myorg/custom-ee:26.01.06.0
 ```
 
 ## Testing the EE
@@ -208,7 +208,7 @@ podman run -it \
 
 The EE is built automatically when:
 1. Code is pushed to `main` branch
-2. A version tag is created (e.g., `v1.0.0`)
+2. A version tag is created (e.g., `26.01.06.0`)
 
 ### Tekton Pipeline
 
@@ -229,20 +229,20 @@ The EE is built automatically when:
 ### Image Tagging Strategy
 
 - **Development**: `myorg-custom-ee:dev` (rebuilt on every commit)
-- **QA**: `myorg-custom-ee:qa-1.0.0` (locked version from manifest)
-- **Production**: `myorg-custom-ee:prod-1.0.0` (locked version from manifest)
+- **QA**: `myorg-custom-ee:26.01.06.0` (locked version from manifest)
+- **Production**: `myorg-custom-ee:26.01.06.0` (locked version from manifest)
 
 ## Atomic Promotion
 
 EE images are version-locked in release manifests:
 
 ```yaml
-# automation-release-manifest/releases/v1.0.0.yaml
-version: "1.0.0"
+# automation-release-manifest/releases/26.01.06.0.yaml
+version: "26.01.06.0"
 components:
   execution_environment:
     image: "quay.io/myorg/custom-ee"
-    tag: "1.0.0"
+    tag: "26.01.06.0"
     digest: "sha256:abc123..."
   aap_configuration: "commit-sha-123"
   collections: "commit-sha-456"
@@ -290,10 +290,10 @@ Scan images for vulnerabilities:
 
 ```bash
 # Using podman
-podman scan quay.io/myorg/custom-ee:1.0.0
+podman scan quay.io/myorg/custom-ee:26.01.06.0
 
 # Using trivy
-trivy image quay.io/myorg/custom-ee:1.0.0
+trivy image quay.io/myorg/custom-ee:26.01.06.0
 ```
 
 ### 5. Keep Images Small
@@ -386,10 +386,10 @@ git push origin main
 
 ```bash
 # Tag for production
-git tag -a v1.0.0 -m "Release 1.0.0"
-git push origin v1.0.0
+git tag -a 26.01.06.0 -m "Release 26.01.06.0"
+git push origin 26.01.06.0
 
-# CI builds and pushes: myorg-custom-ee:1.0.0
+# CI builds and pushes: myorg-custom-ee:26.01.06.0
 ```
 
 ## Using the EE in AAP
@@ -400,7 +400,7 @@ git push origin v1.0.0
 2. Click **Add**
 3. Enter:
    - Name: `Custom EE`
-   - Image: `quay.io/myorg/custom-ee:1.0.0`
+   - Image: `quay.io/myorg/custom-ee:26.01.06.0`
    - Pull: `Always` (dev) or `Missing` (prod)
 
 ### Use in Job Template
