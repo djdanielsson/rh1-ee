@@ -12,16 +12,18 @@ collections:
   - name: ansible.utils
     version: 6.0.0
   - name: community.general
-    version: 12.0.0
-  - name: kubevirt.core
-    version: 2.2.3
+    version: 12.2.0
   - name: ansible.platform
-    version: 2.2.0
+    version: 2.6.20251106
   - name: ansible.hub
-    version: 2.0.0
+    version: 1.0.3
   - name: ansible.eda
-    version: 2.0.0
+    version: 2.10.0
   - name: ansible.controller
-    version: 4.5.0
+    version: 4.7.6
   - name: infra.aap_configuration
-    version: 2.5.0
+    version: 4.1.0
+  - name: myorg.custom_collection
+    type: git
+    source: https://github.com/djdanielsson/rh1-custom-collection.git
+    version: devel # 26.01.06.0
