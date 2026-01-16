@@ -1,13 +1,13 @@
 apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
-  name: ansible-builder-run
+  name: rh1-ee-release
   annotations:
     pipelinesascode.tekton.dev/task-1: "[git-clone]"
     pipelinesascode.tekton.dev/task-2: ".tekton/tasks/ansible-builder-task.yml"
-    pipelinesascode.tekton.dev/on-event: "[pull_request, push]"
-    pipelinesascode.tekton.dev/on-target-branch: "[main]"
+    pipelinesascode.tekton.dev/on-event: "[push]"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-target-branch: "[refs/tags/*]"
 spec:
   workspaces:
   - name: shared-workspace
@@ -59,12 +59,6 @@ spec:
           workspace: shared-workspace
 
       - name: build-image
-        matrix:
-          params:
-            - name: IMAGE
-              value:
-                - "quay.io/igou/rh1-ee:{{ revision }}"
-                - "quay.io/igou/rh1-ee:latest"
         taskRef:
           resolver: cluster
           params:
@@ -77,6 +71,8 @@ spec:
         params:
         - name: DOCKERFILE
           value: "Containerfile"
+        - name: IMAGE
+          value: "quay.io/igou/rh1-ee:{{ git_tag }}"
         - name: CONTEXT
           value: "context"
         - name: VERBOSE
