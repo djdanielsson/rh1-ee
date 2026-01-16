@@ -1,0 +1,86 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: ansible-builder-run
+  annotations:
+    pipelinesascode.tekton.dev/task-1: "[git-clone]"
+    pipelinesascode.tekton.dev/task-2: ".tekton/tasks/ansible-builder-task.yml"
+    pipelinesascode.tekton.dev/on-event: "[push]"
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    pipelinesascode.tekton.dev/on-target-branch: "[refs/tags/*]"
+spec:
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  params:
+    - name: ansible_galaxy_environment_variables
+      value:
+        - "ANSIBLE_GALAXY_SERVER_LIST={{ ansible_galaxy_server_list }}"
+        - "ANSIBLE_GALAXY_SERVER_PUBLISHED_URL={{ ansible_galaxy_server_published_url }}"
+        - "ANSIBLE_GALAXY_SERVER_PUBLISHED_TOKEN={{ ansible_galaxy_server_published_token }}"
+        - "ANSIBLE_GALAXY_SERVER_VALIDATED_URL={{ ansible_galaxy_server_validated_url }}"
+        - "ANSIBLE_GALAXY_SERVER_VALIDATED_TOKEN={{ ansible_galaxy_server_validated_token }}"
+        - "ANSIBLE_GALAXY_SERVER_CERTIFIED_URL={{ ansible_galaxy_server_certified_url }}"
+        - "ANSIBLE_GALAXY_SERVER_CERTIFIED_TOKEN={{ ansible_galaxy_server_certified_token }}"
+        - "ANSIBLE_GALAXY_SERVER_COMMUNITY_URL={{ ansible_galaxy_server_community_url }}"
+        - "ANSIBLE_GALAXY_SERVER_COMMUNITY_TOKEN={{ ansible_galaxy_server_community_token }}"
+
+  pipelineSpec:
+    workspaces:
+    - name: shared-workspace
+    tasks:
+      - name: fetch-source
+        taskRef:
+          name: git-clone
+        params:
+        - name: url
+          value: "{{ repo_url }}"
+        - name: revision
+          value: "{{ revision }}"
+        - name: verbose
+          value: "true"
+        workspaces:
+        - name: output
+          workspace: shared-workspace
+
+      - name: ansible-builder
+        runAfter:
+        - fetch-source
+        taskRef:
+          name: ansible-builder
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+
+      - name: build-image
+        taskRef:
+          resolver: cluster
+          params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+        params:
+        - name: DOCKERFILE
+          value: "Containerfile"
+        - name: IMAGE
+          value: "quay.io/igou/rh1-ee:{{ git_tag }}"
+        - name: CONTEXT
+          value: "context"
+        - name: VERBOSE
+          value: "true"
+        - name: BUILD_ARGS
+          value: $(params.ansible_galaxy_environment_variables[*])
+        workspaces:
+        - name: source
+          workspace: shared-workspace
+        runAfter:
+        - ansible-builder
