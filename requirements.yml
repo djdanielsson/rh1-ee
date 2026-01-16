@@ -24,6 +24,4 @@ collections:
   - name: infra.aap_configuration
     version: 4.1.0
   - name: myorg.custom_collection
-    type: git
-    source: https://github.com/djdanielsson/rh1-custom-collection.git
-    version: devel # 26.01.06.0
+    version: 26.1.6-0
