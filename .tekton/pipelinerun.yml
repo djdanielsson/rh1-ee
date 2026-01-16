@@ -23,12 +23,14 @@ spec:
       value:
         - "ANSIBLE_GALAXY_SERVER_LIST={{ ansible_galaxy_server_list }}"
         - "ANSIBLE_GALAXY_SERVER_PUBLISHED_URL={{ ansible_galaxy_server_published_url }}"
-        - "ANSIBLE_GALAXY_SERVER_PUBLISHED_AUTH_URL={{ ansible_galaxy_server_published_auth_url }}"
         - "ANSIBLE_GALAXY_SERVER_PUBLISHED_TOKEN={{ ansible_galaxy_server_published_token }}"
         - "ANSIBLE_GALAXY_SERVER_VALIDATED_URL={{ ansible_galaxy_server_validated_url }}"
-        - "ANSIBLE_GALAXY_SERVER_VALIDATED_AUTH_URL={{ ansible_galaxy_server_validated_auth_url }}"
         - "ANSIBLE_GALAXY_SERVER_VALIDATED_TOKEN={{ ansible_galaxy_server_validated_token }}"
+        - "ANSIBLE_GALAXY_SERVER_CERTIFIED_URL={{ ansible_galaxy_server_certified_url }}"
+        - "ANSIBLE_GALAXY_SERVER_CERTIFIED_TOKEN={{ ansible_galaxy_server_certified_token }}"
         - "ANSIBLE_GALAXY_SERVER_COMMUNITY_URL={{ ansible_galaxy_server_community_url }}"
+        - "ANSIBLE_GALAXY_SERVER_COMMUNITY_TOKEN={{ ansible_galaxy_server_community_token }}"
+
   pipelineSpec:
     workspaces:
     - name: shared-workspace
