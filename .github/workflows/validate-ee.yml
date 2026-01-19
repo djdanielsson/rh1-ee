@@ -43,11 +43,29 @@ jobs:
           fi
 
           # Check requirements.yml for missing versions
-          if grep -E "^\s*-\s*name:" requirements.yml | grep -v "version:"; then
-            echo "❌ ERROR: Collections without version specified"
-            echo "All collections must have explicit versions"
-            exit 1
-          fi
+          # Use Python to properly parse YAML and validate each collection has a version
+          python3 << 'EOF'
+          import yaml
+          import sys
+
+          with open('requirements.yml') as f:
+              data = yaml.safe_load(f)
+
+          collections = data.get('collections', [])
+          errors = []
+
+          for col in collections:
+              if isinstance(col, dict):
+                  name = col.get('name', '<unknown>')
+                  if 'version' not in col:
+                      errors.append(f"  - {name}: missing version")
+
+          if errors:
+              print("❌ ERROR: Collections without version specified:")
+              print("\n".join(errors))
+              print("\nAll collections must have explicit versions")
+              sys.exit(1)
+          EOF
 
           # Check requirements.txt for unpinned versions
           if grep -E "^[^#].*[><=~]" requirements.txt; then
