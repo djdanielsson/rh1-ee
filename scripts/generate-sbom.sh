@@ -131,4 +131,3 @@ echo ""
 echo "Constitutional compliance:"
 echo "  ✅ Article V: Zero-Trust Security - Complete component inventory"
 echo "  ✅ Article IV: Production-Grade Quality - Traceable dependencies"
-

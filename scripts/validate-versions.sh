@@ -110,19 +110,3 @@ else
     echo -e "${RED}❌ Validation failed with $ERRORS error(s) and $WARNINGS warning(s)${NC}"
     exit 1
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

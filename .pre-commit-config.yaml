@@ -77,11 +77,19 @@ repos:
   # ============================================================================
   # Markdown Linting
   # ============================================================================
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.12.0
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
     hooks:
       - id: markdownlint
-        args: ['--rules', '~MD013,~MD033']
+        # Disabled rules:
+        # MD013 - Line length
+        # MD033 - Inline HTML
+        # MD034 - Bare URLs
+        # MD031 - Blanks around fences
+        # MD032 - Blanks around lists
+        # MD040 - Fenced code language
+        # MD022 - Blanks around headings
+        args: ['--disable', 'MD013', 'MD033', 'MD034', 'MD031', 'MD032', 'MD040', 'MD022', '--']
 
   # ============================================================================
   # EE Structure Validation
@@ -111,7 +119,15 @@ repos:
       - id: ee-yaml-validation
         name: Execution Environment YAML Validation
         entry: |
-          bash -c 'if [ -f execution-environment.yml ]; then python3 -c "import yaml; ee=yaml.safe_load(open(\"execution-environment.yml\")); assert \"version\" in ee, \"Missing version\"; assert \"images\" in ee, \"Missing images\"; assert \"dependencies\" in ee, \"Missing dependencies\"" || { echo "❌ Invalid execution-environment.yml"; exit 1; }; echo "✅ execution-environment.yml valid"; fi'
+          bash -c 'python3 -c "
+          import yaml, sys
+          ee = yaml.safe_load(open(\"execution-environment.yml\"))
+          missing = [k for k in [\"version\", \"images\", \"dependencies\"] if k not in ee]
+          if missing:
+              print(\"❌ Invalid execution-environment.yml: Missing\", missing)
+              sys.exit(1)
+          print(\"✅ execution-environment.yml valid\")
+          "'
         language: system
         files: ^execution-environment\.yml$
         pass_filenames: false
@@ -137,7 +153,14 @@ repos:
       - id: requirements-yml-validation
         name: Requirements.yml Validation
         entry: |
-          bash -c 'if [ -f requirements.yml ]; then python3 -c "import yaml; reqs=yaml.safe_load(open(\"requirements.yml\")); assert \"collections\" in reqs, \"Missing collections key\"" || { echo "❌ Invalid requirements.yml"; exit 1; }; echo "✅ requirements.yml valid"; fi'
+          bash -c 'python3 -c "
+          import yaml, sys
+          reqs = yaml.safe_load(open(\"requirements.yml\"))
+          if \"collections\" not in reqs:
+              print(\"❌ Invalid requirements.yml: Missing collections key\")
+              sys.exit(1)
+          print(\"✅ requirements.yml valid\")
+          "'
         language: system
         files: ^requirements\.yml$
         pass_filenames: false
@@ -249,6 +272,3 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
-
-
-

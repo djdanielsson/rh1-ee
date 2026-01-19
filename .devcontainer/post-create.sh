@@ -149,4 +149,3 @@ echo "  2. Run: build-ee"
 echo "  3. Run: test-ee-local localhost/ansible-ee:latest"
 echo "  4. Run: generate-sbom localhost/ansible-ee:latest"
 echo "  5. Run: scan-vulnerabilities localhost/ansible-ee:latest"
-

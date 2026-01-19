@@ -41,4 +41,3 @@ jq [platform:rpm]
 # Networking tools
 # tcpdump [platform:rpm]
 # nmap [platform:rpm]
-

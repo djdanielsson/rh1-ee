@@ -75,6 +75,3 @@ jobs:
           l_max_size: 500
           xl_label: 'size/xl'
           fail_if_xl: false
-
-
-
