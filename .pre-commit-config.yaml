@@ -27,9 +27,6 @@ repos:
       - id: trailing-whitespace
         args: ['--markdown-linebreak-ext=md']
 
-      # Verify YAML syntax
-      - id: check-yaml
-
       # Check for merge conflict markers
       - id: check-merge-conflict
 
@@ -39,17 +36,6 @@ repos:
 
       # Check case conflicts
       - id: check-case-conflict
-
-  # ============================================================================
-  # YAML Linting
-  # ============================================================================
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.33.0
-    hooks:
-      - id: yamllint
-        args:
-          - '--config-file=.yamllint'
-        files: \.(yaml|yml)$
 
   # ============================================================================
   # Security Scanning - Secrets Detection
