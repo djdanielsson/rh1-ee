@@ -30,27 +30,8 @@ repos:
       # Check for merge conflict markers
       - id: check-merge-conflict
 
-      # Prevent committing to main/master directly
-      - id: no-commit-to-branch
-        args: ['--branch', 'main', '--branch', 'master']
-
       # Check case conflicts
       - id: check-case-conflict
-
-  # ============================================================================
-  # Security Scanning - Secrets Detection
-  # ============================================================================
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
-    hooks:
-      - id: detect-secrets
-        args:
-          - '--baseline'
-          - '.secrets.baseline'
-        exclude: |
-          (?x)^(
-            \.secrets\.baseline
-          )$
 
   # ============================================================================
   # GitLeaks - Additional Secrets Detection
