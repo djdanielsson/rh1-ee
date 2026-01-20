@@ -24,4 +24,4 @@ collections:
   - name: infra.aap_configuration
     version: 4.1.0
   - name: myorg.custom_collection
-    version: 26.1.16-0
+    version: 26.1.16-1
