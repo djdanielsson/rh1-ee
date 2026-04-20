@@ -14,7 +14,7 @@ repos:
   # General Checks - All Files
   # ============================================================================
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       # Prevent large files from being committed
       - id: check-added-large-files
