@@ -134,3 +134,8 @@ ansible-navigator.log
 # Keep README and docs
 !README.md
 !docs/**
+.env
+.env.*
+credentials.json
+.env.local
+.env.production
