@@ -38,10 +38,7 @@ charset-normalizer==3.4.4
 click==8.3.0
     # via
     #   black
-    #   click-help-colors
     #   molecule
-click-help-colors==0.9.4
-    # via molecule
 cryptography==46.0.3
     # via
     #   ansible-core
@@ -81,7 +78,7 @@ markupsafe==3.0.3
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
-molecule==25.9.0
+molecule==26.4.0
     # via -r requirements.in
 mypy-extensions==1.1.0
     # via black
