@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-ansible-compat==25.8.2
+ansible-compat==26.3.0
     # via
     #   ansible-lint
     #   molecule
@@ -13,7 +13,7 @@ ansible-core==2.20.0
     #   ansible-compat
     #   ansible-lint
     #   molecule
-ansible-lint==25.9.2
+ansible-lint==26.4.0
     # via -r requirements.in
 attrs==25.4.0
     # via
@@ -58,8 +58,6 @@ google-auth==2.42.1
     # via kubernetes
 idna==3.11
     # via requests
-importlib-metadata==8.7.0
-    # via ansible-lint
 jinja2==3.1.6
     # via
     #   -r requirements.in
@@ -98,7 +96,7 @@ packaging==25.0
     #   ansible-lint
     #   black
     #   molecule
-pathspec==0.12.1
+pathspec==1.0.4
     # via
     #   ansible-lint
     #   black
@@ -181,7 +179,5 @@ wcmatch==10.1
     #   molecule
 websocket-client==1.9.0
     # via kubernetes
-yamllint==1.37.1
+yamllint==1.38.0
     # via ansible-lint
-zipp==3.23.0
-    # via importlib-metadata
