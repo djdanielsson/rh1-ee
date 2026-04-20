@@ -107,7 +107,7 @@ platformdirs==4.5.0
     # via black
 pluggy==1.6.0
     # via molecule
-pyasn1==0.6.1
+pyasn1==0.6.3
     # via
     #   pyasn1-modules
     #   rsa
