@@ -45,7 +45,7 @@ repos:
   # Markdown Linting
   # ============================================================================
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.43.0
+    rev: v0.48.0
     hooks:
       - id: markdownlint
         # Disabled rules:
