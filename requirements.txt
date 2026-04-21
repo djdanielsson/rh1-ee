@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-ansible-compat==25.8.2
+ansible-compat==26.3.0
     # via
     #   ansible-lint
     #   molecule
@@ -13,13 +13,13 @@ ansible-core==2.20.0
     #   ansible-compat
     #   ansible-lint
     #   molecule
-ansible-lint==25.9.2
+ansible-lint==26.4.0
     # via -r requirements.in
 attrs==25.4.0
     # via
     #   jsonschema
     #   referencing
-black==25.9.0
+black==26.3.1
     # via ansible-lint
 bracex==2.6
     # via wcmatch
@@ -38,11 +38,10 @@ charset-normalizer==3.4.4
 click==8.3.0
     # via
     #   black
-    #   click-help-colors
     #   molecule
 click-help-colors==0.9.4
     # via molecule
-cryptography==46.0.3
+cryptography==46.0.7
     # via
     #   ansible-core
     #   ansible-lint
@@ -52,22 +51,20 @@ durationpy==0.10
     # via kubernetes
 enrich==1.2.7
     # via molecule
-filelock==3.20.0
+filelock==3.20.3
     # via ansible-lint
 google-auth==2.42.1
     # via kubernetes
 idna==3.11
     # via requests
-importlib-metadata==8.7.0
-    # via ansible-lint
 jinja2==3.1.6
     # via
     #   -r requirements.in
     #   ansible-core
     #   molecule
-jmespath==1.0.1
+jmespath==1.1.0
     # via -r requirements.in
-jsonschema==4.25.1
+jsonschema==4.26.0
     # via
     #   -r requirements.in
     #   ansible-compat
@@ -83,7 +80,7 @@ markupsafe==3.0.3
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
-molecule==25.9.0
+molecule==26.4.0
     # via -r requirements.in
 mypy-extensions==1.1.0
     # via black
@@ -98,7 +95,7 @@ packaging==25.0
     #   ansible-lint
     #   black
     #   molecule
-pathspec==0.12.1
+pathspec==1.0.4
     # via
     #   ansible-lint
     #   black
@@ -107,7 +104,7 @@ platformdirs==4.5.0
     # via black
 pluggy==1.6.0
     # via molecule
-pyasn1==0.6.1
+pyasn1==0.6.3
     # via
     #   pyasn1-modules
     #   rsa
@@ -115,11 +112,11 @@ pyasn1-modules==0.4.2
     # via google-auth
 pycparser==2.23
     # via cffi
-pygments==2.19.2
+pygments==2.20.0
     # via rich
 python-dateutil==2.9.0.post0
     # via kubernetes
-pytokens==0.2.0
+pytokens==0.4.1
     # via black
 pyyaml==6.0.3
     # via
@@ -135,7 +132,7 @@ referencing==0.37.0
     #   ansible-lint
     #   jsonschema
     #   jsonschema-specifications
-requests==2.33.0
+requests==2.33.1
     # via
     #   -r requirements.in
     #   kubernetes
@@ -181,7 +178,5 @@ wcmatch==10.1
     #   molecule
 websocket-client==1.9.0
     # via kubernetes
-yamllint==1.37.1
+yamllint==1.38.0
     # via ansible-lint
-zipp==3.23.0
-    # via importlib-metadata
