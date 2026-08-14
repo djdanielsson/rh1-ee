@@ -5,6 +5,8 @@ metadata:
   annotations:
     pipelinesascode.tekton.dev/task-1: "[git-clone]"
     pipelinesascode.tekton.dev/task-2: ".tekton/tasks/ansible-builder-task.yml"
+    pipelinesascode.tekton.dev/task-3: "https://raw.githubusercontent.com/djdanielsson/rh1-cluster-config/refs/heads/main/tekton-tasks/skopeo-inspect-digest-task.yml"
+    pipelinesascode.tekton.dev/task-4: "https://raw.githubusercontent.com/djdanielsson/rh1-cluster-config/refs/heads/main/tekton-tasks/cosign-sign-image-task.yml"
     pipelinesascode.tekton.dev/on-event: "[push]"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-target-branch: "[refs/tags/*]"
@@ -18,6 +20,12 @@ spec:
         resources:
           requests:
             storage: 1Gi
+  - name: galaxy-gpg-keyring
+    secret:
+      secretName: galaxy-gpg-keyring
+  - name: cosign-keys
+    secret:
+      secretName: cosign-signing-key
   params:
     - name: ansible_galaxy_environment_variables
       value:
@@ -34,6 +42,8 @@ spec:
   pipelineSpec:
     workspaces:
     - name: shared-workspace
+    - name: galaxy-gpg-keyring
+    - name: cosign-keys
     tasks:
       - name: fetch-source
         taskRef:
@@ -57,6 +67,8 @@ spec:
         workspaces:
         - name: source
           workspace: shared-workspace
+        - name: galaxy-gpg-keyring
+          workspace: galaxy-gpg-keyring
 
       - name: build-image
         taskRef:
@@ -84,3 +96,24 @@ spec:
           workspace: shared-workspace
         runAfter:
         - ansible-builder
+
+      - name: inspect-image-digest
+        runAfter:
+        - build-image
+        taskRef:
+          name: skopeo-inspect-digest
+        params:
+        - name: IMAGE
+          value: "quay.io/igou/rh1-ee:{{ git_tag }}"
+
+      - name: cosign-sign-image
+        runAfter:
+        - inspect-image-digest
+        taskRef:
+          name: cosign-sign-image
+        params:
+        - name: IMAGE
+          value: $(tasks.inspect-image-digest.results.image-with-digest)
+        workspaces:
+        - name: cosign-keys
+          workspace: cosign-keys

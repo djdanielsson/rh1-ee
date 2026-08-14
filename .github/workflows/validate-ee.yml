@@ -103,6 +103,14 @@ jobs:
 
           echo "✅ All required files present"
 
+      - name: Validate collection signature configuration
+        run: |
+          if grep -A5 "myorg.custom_collection" requirements.yml | grep -q "signatures:"; then
+            echo "✅ Custom collection signature sources configured"
+          else
+            echo "⚠️  WARNING: myorg.custom_collection has no signatures block in requirements.yml"
+          fi
+
       - name: Validate ansible-builder syntax
         run: |
           pip install ansible-builder

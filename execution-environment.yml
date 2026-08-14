@@ -9,6 +9,7 @@ images:
 
 options:
   package_manager_path: /usr/bin/microdnf
+  container_policy: signature_required
 dependencies:
   exclude:
     system:

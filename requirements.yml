@@ -25,3 +25,5 @@ collections:
     version: 4.1.0
   - name: myorg.custom_collection
     version: 26.1.16-0
+    signatures:
+      - file:///etc/ansible/galaxy-keyring/trusted.asc
