@@ -87,7 +87,7 @@ markupsafe==3.0.3
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
-molecule==26.6.0
+molecule==26.8.0
     # via -r requirements.in
 multidict==6.7.1
     # via
