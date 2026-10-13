@@ -19,7 +19,7 @@ ansible-core==2.20.7rc1
     #   ansible-compat
     #   ansible-lint
     #   molecule
-ansible-lint==26.8.0
+ansible-lint==26.9.0
     # via -r requirements.in
 attrs==25.4.0
     # via
@@ -161,9 +161,7 @@ rpds-py==0.28.0
 ruamel-yaml==0.18.16
     # via ansible-lint
 ruamel-yaml-clib==0.2.14
-    # via
-    #   ansible-lint
-    #   ruamel-yaml
+    # via ruamel-yaml
 six==1.17.0
     # via
     #   kubernetes
