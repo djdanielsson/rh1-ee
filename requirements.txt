@@ -177,7 +177,7 @@ typing-extensions==4.15.0
     #   aiohttp
     #   aiosignal
     #   referencing
-urllib3==2.3.0
+urllib3==2.8.0
     # via
     #   -r requirements.in
     #   kubernetes
